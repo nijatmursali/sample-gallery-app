@@ -18,19 +18,19 @@ export const MainScreen = () => {
     fetchImages();
   }, [query]);
 
-  const fetchImages = (e) => {
-    setQuery(e);
-    if (e === "") {
+  const fetchImages = async (count = 10) => {
+    if (query === "") {
       setLoading(true);
     }
-    axios.get(`https://www.reddit.com/r/${query}/top.json`).then((res) => {
-      setCount(res.data.data.children);
+    await axios
+      .get(`https://www.reddit.com/r/${query}/top.json`)
+      .then((res) => {
+        setCount(res.data.data.children);
 
-      console.log("Lenght is, ", res.data.data.children.length);
-      setImage([...res.data.data.children]);
-      //setImage([...res.data.data.children].slice(0, count));
-      setLoading(false);
-    });
+        console.log("Lenght is, ", res.data.data.children.length);
+        setImage([...images, ...res.data.data.children]);
+        setLoading(false);
+      });
   };
 
   return (
@@ -40,7 +40,7 @@ export const MainScreen = () => {
         <input
           placeholder="Enter query"
           value={query}
-          onChange={(e) => fetchImages(e.target.value)}
+          onChange={(e) => setQuery(e.target.value)}
         />
       </div>
 
